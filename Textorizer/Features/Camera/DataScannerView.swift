@@ -11,11 +11,13 @@ import VisionKit
 struct DataScannerView: UIViewControllerRepresentable {
     
     @Binding var recognizedItems: [RecognizedItem]
+    let recognizedDataType: DataScannerViewController.RecognizedDataType
     
     func makeUIViewController(context: Context) -> DataScannerViewController {
+        
         let vc = DataScannerViewController(
-            recognizedDataTypes: [.text()],
-            qualityLevel: .fast,
+            recognizedDataTypes: [recognizedDataType],
+            qualityLevel: .accurate,
             recognizesMultipleItems: true,
             isGuidanceEnabled: true,
             isHighlightingEnabled: true
@@ -79,8 +81,4 @@ struct DataScannerView: UIViewControllerRepresentable {
             print("")
         }
     }
-}
-
-#Preview {
-    DataScannerView(recognizedItems: .constant([]))
 }

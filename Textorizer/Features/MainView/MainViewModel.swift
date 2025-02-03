@@ -24,6 +24,17 @@ final class MainViewModel: ObservableObject {
     @Published var recognizedItems: [RecognizedItem] = []
     @Published var textContentType: DataScannerViewController.TextContentType?
     
+    var recognizedDataType: DataScannerViewController.RecognizedDataType {
+        .text(textContentType: textContentType)
+    }
+    
+    var headerText: String {
+        if recognizedItems.isEmpty {
+            return "Scanning text..."
+        } else {
+            return "Recognized \(recognizedItems.count) items"
+        }
+    }
     
     private var isScannerAvailable: Bool {
         DataScannerViewController.isAvailable && DataScannerViewController.isSupported
