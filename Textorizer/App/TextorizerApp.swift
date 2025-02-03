@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct TextorizerApp: App {
+    @StateObject private var vm = MainViewModel()
+    
     var body: some Scene {
         WindowGroup {
             MainView()
+                .environmentObject(vm)
+                .task {
+                    await vm.requestAccess()
+                }
         }
     }
 }
