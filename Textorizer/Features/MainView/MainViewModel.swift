@@ -10,19 +10,16 @@ import SwiftUI
 import VisionKit
 import AVKit
 
-enum CameraAccessStatus {
-    case notDetermined
-    case accessNotGranted
-    case cameraNotAvailable
-    case scannerAvailable
-    case scannerNotAvailable
-}
-
 @MainActor
 final class MainViewModel: ObservableObject {
-     @Published var accessStatus: CameraAccessStatus = .notDetermined
-    @Published var recognizedItems: [RecognizedItem] = []
+    @Published var accessStatus: CameraAccessStatus = .notDetermined
     @Published var textContentType: DataScannerViewController.TextContentType?
+    @Published var recognizedItems: [RecognizedItem] = []
+    @Published var shouldCapturePhoto = false
+    @Published var shouldStopScanning = false
+    @Published var capturedPhoto: IdentifiableImage? = nil
+    @Published var activeView: ViewType?
+    @Published var selectedText = ""
     
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
         .text(textContentType: textContentType)
@@ -56,10 +53,9 @@ final class MainViewModel: ObservableObject {
             }
         case .restricted, .denied:
             accessStatus = .accessNotGranted
-          case .authorized:
+        case .authorized:
             accessStatus = isScannerAvailable ? .scannerAvailable : .scannerNotAvailable
-        @unknown default: break
+        default: break
         }
     }
-    
 }
