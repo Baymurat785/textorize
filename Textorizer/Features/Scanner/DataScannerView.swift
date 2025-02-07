@@ -9,8 +9,11 @@ import SwiftUI
 import VisionKit
 
 struct DataScannerView: UIViewControllerRepresentable {
-    
     @Binding var recognizedItems: [RecognizedItem]
+    @Binding var shouldCapturePhoto: Bool
+    @Binding var capturedPhoto: IdentifiableImage?
+    @Binding var shouldStopScanning: Bool
+    
     let recognizedDataType: DataScannerViewController.RecognizedDataType
     
     func makeUIViewController(context: Context) -> DataScannerViewController {
@@ -24,30 +27,42 @@ struct DataScannerView: UIViewControllerRepresentable {
         )
         vc.delegate = context.coordinator
         
-        do {
-            try vc.startScanning()
-        } catch {
-            print("Failed to start scanning: \(error)")
-        }
-        
         return vc
-    }
-
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(recognizedItems: $recognizedItems)
     }
     
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
-        guard uiViewController.delegate == nil else { return }
-
-           uiViewController.delegate = context.coordinator
-           do {
-               try uiViewController.startScanning()
-               print("start scanning")
-           } catch {
-               print("Could not start scanning: \(error)")
-           }
+        uiViewController.delegate = context.coordinator
+        try? uiViewController.startScanning()
+        
+        if shouldCapturePhoto {
+            DispatchQueue.main.async {
+                self.shouldCapturePhoto = false
+            }
+            capturePhoto(dataScannerVC: uiViewController)
+        }
+        
+        if shouldStopScanning {
+           uiViewController.stopScanning()
+        }
+    }
+    
+    //For debugging an error from NSError, I used ChatGPT
+    private func capturePhoto(dataScannerVC: DataScannerViewController) {
+        Task { @MainActor in
+            do {
+                let photo = try await dataScannerVC.capturePhoto()
+                self.capturedPhoto = .init(image: photo)
+            } catch {
+                let nsError = error as NSError
+                   print("Error domain: \(nsError.domain)")
+                   print("Error code: \(nsError.code)")
+                   print("Description: \(nsError.localizedDescription)")
+            }
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(recognizedItems: $recognizedItems)
     }
     
     static func dismantleUIViewController(_ uiViewController: DataScannerViewController, coordinator: Coordinator) {
@@ -75,10 +90,16 @@ struct DataScannerView: UIViewControllerRepresentable {
             recognizedItems = allItems
             print("didRemoveItems \(removedItems)")
         }
-
+        
         
         func dataScanner(_ dataScanner: DataScannerViewController, becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
             print("")
         }
     }
+}
+
+struct IdentifiableImage: Identifiable {
+    let id = UUID()
+    let image: UIImage
+    
 }

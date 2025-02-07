@@ -8,45 +8,52 @@
 import SwiftUI
 
 struct MainView: View {
-    @State private var showScanner = false
-    @State private var showCamera = false
     @EnvironmentObject var vm: MainViewModel
     
     var body: some View {
         VStack {
-            Spacer()
+            CustomSelectableTextView(text: "My name is Baymurat, I slept a lot today. Now sitting in the lecture", selectedText: $vm.selectedText)
+                .frame(height: 200)
+                .padding()
+                .onChange(of: vm.selectedText) { oldValue, newValue in
+                    print(newValue)
+                }
             
+            
+            
+            
+            
+            Spacer()
             HStack {
-                Button {
-                    showScanner = true
-                } label: {
-                    Image(systemName: "scanner")
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(
-                            Rectangle()
-                                .fill(.blue)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                CustomButton(systemImageName: "scanner") {
+                    vm.activeView = .camera
                 }
                 
-                Button {
-                    showCamera = true
-                } label: {
-                    Image(systemName: "camera")
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(
-                            Rectangle()
-                                .fill(.blue)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                CustomButton(systemImageName: "camera") {
+                    vm.activeView = .scanner
                 }
-
+                if !vm.selectedText.isEmpty {
+                    CustomButton(systemImageName: "star") {
+                        print(vm.selectedText)
+                    }
+                }
             }
         }
         .padding()
-        .fullScreenCover(isPresented: $showScanner) {
+        .fullScreenCover(item: $vm.activeView) { view in
+            switch view {
+            case .camera:
+                camera
+            case .scanner:
+                CameraView()
+                    .environmentObject(vm)
+            }
+        }
+    }
+    
+    private var camera: some View {
+        // Fix this request accesss!!
+        VStack {
             switch vm.accessStatus {
             case .notDetermined:
                 Text("Requesting Camera Access")
@@ -60,11 +67,6 @@ struct MainView: View {
             case .scannerNotAvailable:
                 Text("Your device doesn't have support for scanning")
             }
-        }
-        
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraView()
-                .environmentObject(vm)
         }
     }
 }
