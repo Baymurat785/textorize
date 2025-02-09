@@ -29,8 +29,7 @@ final class MainViewModel: ObservableObject {
     //    @Published var shouldCapturePhoto = false
     //    @Published var capturedPhoto: IdentifiableImage? = nil
     
-    
-    //Text content type
+    //Consider improving this!
     let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = [
         ("All", .none),
         ("URL", .URL),
@@ -42,6 +41,7 @@ final class MainViewModel: ObservableObject {
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
         .text(textContentType: textContentType)
     }
+    
     var showStopScanning: Bool {
         !extractedItems.isEmpty
     }

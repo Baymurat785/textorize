@@ -8,7 +8,6 @@
 import SwiftUI
 import VisionKit
 
-
 struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
