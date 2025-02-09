@@ -12,17 +12,48 @@ import AVKit
 
 @MainActor
 final class MainViewModel: ObservableObject {
+    //MARK: - Camera Access
     @Published var accessStatus: CameraAccessStatus = .notDetermined
-    @Published var textContentType: DataScannerViewController.TextContentType?
-    @Published var recognizedItems: [RecognizedItem] = []
-    @Published var shouldCapturePhoto = false
-    @Published var shouldStopScanning = false
-    @Published var capturedPhoto: IdentifiableImage? = nil
-    @Published var activeView: ViewType?
-    @Published var selectedText = ""
     
+    //MARK: - Scanning & Text recognition
+    @Published var recognizedItems: [RecognizedItem] = []
+    @Published var extractedItems: [RecognizedItem] = []
+    @Published var shouldScan = true
+    @Published var selectedText = ""
+
+    //MARK: - UI State
+    @Published var activeView: ViewType?
+    @Published var textContentType: DataScannerViewController.TextContentType?
+    
+    //MARK: - Capture photo
+    //    @Published var shouldCapturePhoto = false
+    //    @Published var capturedPhoto: IdentifiableImage? = nil
+    
+    
+    //Text content type
+    let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = [
+        ("All", .none),
+        ("URL", .URL),
+        ("Phone", .telephoneNumber),
+        ("Email", .emailAddress),
+        ("Address", .fullStreetAddress)
+    ]
+
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
         .text(textContentType: textContentType)
+    }
+    var showStopScanning: Bool {
+        !extractedItems.isEmpty
+    }
+    
+    var extractedText: String {
+        extractedItems.compactMap { item -> String? in
+            if case .text(let text) = item {
+                return text.transcript
+            }
+            return nil
+        }
+        .joined(separator: "\n")
     }
     
     var headerText: String {

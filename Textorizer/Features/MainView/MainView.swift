@@ -19,11 +19,8 @@ struct MainView: View {
                     print(newValue)
                 }
             
-            
-            
-            
-            
             Spacer()
+            
             HStack {
                 CustomButton(systemImageName: "scanner") {
                     vm.activeView = .camera
