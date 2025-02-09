@@ -72,12 +72,12 @@ struct ScannerView: View {
                                 //think of adding haptic feedback!!
                                 UIPasteboard.general.string = vm.preferredText
                                 
-                                withAnimation(.linear) {
+                                withAnimation {
                                     copiedToClipBoard = true
                                     
                                 }
                                 DispatchQueue.main.asyncAfter (deadline: .now() + 1.5) {
-                                    withAnimation(.linear) {
+                                    withAnimation {
                                         copiedToClipBoard = false
                                     }
                                 }
