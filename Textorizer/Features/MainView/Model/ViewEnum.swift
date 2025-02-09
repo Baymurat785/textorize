@@ -11,4 +11,5 @@ enum ViewType: String, Identifiable {
     case camera
     case scanner
     
-    var id: String { self.rawValue }}
+    var id: String { self.rawValue }
+}

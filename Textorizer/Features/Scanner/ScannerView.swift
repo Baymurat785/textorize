@@ -8,35 +8,9 @@
 import SwiftUI
 import VisionKit
 
-
 struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
-    @State var textSelection = ""
-
-    private var recognizedText: String {
-        vm.recognizedItems.compactMap { item -> String? in
-            if case .text(let text) = item {
-                return text.transcript
-            }
-            return nil
-        }
-        .joined(separator: "\n")
-    }
-    
-    private let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = [
-        ("All", .none),
-        ("URL", .URL),
-        ("Phone", .telephoneNumber),
-        ("Email", .emailAddress),
-        ("Address", .fullStreetAddress)
-    ]
-    
-    private var showStopScanning: Bool {
-        !vm.recognizedItems.isEmpty
-    }
-    
-    @State private var localRecognizedText: String = ""
     
     var body: some View {
         ZStack {
@@ -68,55 +42,60 @@ struct ScannerView: View {
         
         VStack {
             headerView
-                .disabled(vm.capturedPhoto != nil)
+//                .disabled(vm.capturedPhoto != nil)
                 .padding(.top)
             
             VStack(alignment: .leading, spacing: 16) {
-                CustomSelectableTextView(text: recognizedText, selectedText: $vm.selectedText)
+                CustomSelectableTextView(text: vm.extractedText, selectedText: $vm.selectedText)
                     .frame(minWidth: 40)
             }
             .frame(height: 400)  // FIXME: remove this static height!!
         }
-        .sheet(item: $vm.capturedPhoto, content: { photo in
-            VStack() {
-                LiveTextView(image: photo.image)
-                Button {
-                    vm.capturedPhoto = nil
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                }
-                .foregroundStyle(.white)
-                .padding([.trailing, .top])
-            }
-        })
+//        .sheet(item: $vm.capturedPhoto, content: { photo in
+//            VStack() {
+//                LiveTextView(image: photo.image)
+//                Button {
+//                    vm.capturedPhoto = nil
+//                } label: {
+//                    Image(systemName: "xmark.circle.fill")
+//                }
+//                .foregroundStyle(.white)
+//                .padding([.trailing, .top])
+//            }
+//        })
         .task {
             await vm.requestAccess()
+        }
+        .onChange(of: vm.recognizedItems) {
+            if !vm.recognizedItems.isEmpty {
+                vm.extractedItems = vm.recognizedItems
+            }
         }
     }
     
     @ViewBuilder
     private var liveImageFeed: some View {
-        if let capturedPhoto = vm.capturedPhoto {
-            Image(uiImage: capturedPhoto.image)
-                .resizable()
-                .scaledToFit()
-            
-        } else {
+//        if let capturedPhoto = vm.capturedPhoto {
+//            Image(uiImage: capturedPhoto.image)
+//                .resizable()
+//                .scaledToFit()
+//            
+//        } else {
             DataScannerView(
                 recognizedItems: $vm.recognizedItems,
-                shouldCapturePhoto: $vm.shouldCapturePhoto,
-                capturedPhoto: $vm.capturedPhoto,
-                shouldStopScanning: $vm.shouldStopScanning,
+//                shouldCapturePhoto: $vm.shouldCapturePhoto,
+//                capturedPhoto: $vm.capturedPhoto,
+                shouldScan: $vm.shouldScan,
                 recognizedDataType: vm.recognizedDataType
             )
-        }
+//        }
     }
     
     private var headerView: some View {
         VStack {
             HStack {
                 Picker("Text content type", selection: $vm.textContentType) {
-                    ForEach(textContentTypes, id: \.self.textContentType) {
+                    ForEach(vm.textContentTypes, id: \.self.textContentType) {
                         Text($0.title).tag($0.textContentType)
                     }
                 }
@@ -126,20 +105,20 @@ struct ScannerView: View {
             HStack {
                 Text(vm.headerText)
                     .padding(.top)
+//                
+//                Button {
+//                    vm.shouldCapturePhoto = true
+//                } label: {
+//                    Image(systemName: "camera.circle")
+//                        .imageScale(.large)
+//                        .font(.system(size: 32))
+//                }
                 
-                Button {
-                    vm.shouldCapturePhoto = true
-                } label: {
-                    Image(systemName: "camera.circle")
-                        .imageScale(.large)
-                        .font(.system(size: 32))
-                }
-                
-                if showStopScanning {
+                if vm.showStopScanning {
                     Button {
-                        vm.shouldStopScanning = true
+                        vm.shouldScan.toggle()
                     } label: {
-                        Image(systemName: "stop.circle.fill")
+                        Image(systemName: vm.shouldScan ? "stop.circle" : "text.viewfinder")
                             .imageScale(.large)
                             .font(.system(size: 32))
                     }

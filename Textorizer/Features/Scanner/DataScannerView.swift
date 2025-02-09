@@ -10,9 +10,9 @@ import VisionKit
 
 struct DataScannerView: UIViewControllerRepresentable {
     @Binding var recognizedItems: [RecognizedItem]
-    @Binding var shouldCapturePhoto: Bool
-    @Binding var capturedPhoto: IdentifiableImage?
-    @Binding var shouldStopScanning: Bool
+//    @Binding var shouldCapturePhoto: Bool
+//    @Binding var capturedPhoto: IdentifiableImage?
+    @Binding var shouldScan: Bool
     
     let recognizedDataType: DataScannerViewController.RecognizedDataType
     
@@ -32,34 +32,35 @@ struct DataScannerView: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
         uiViewController.delegate = context.coordinator
-        try? uiViewController.startScanning()
-        
-        if shouldCapturePhoto {
-            DispatchQueue.main.async {
-                self.shouldCapturePhoto = false
-            }
-            capturePhoto(dataScannerVC: uiViewController)
+        if shouldScan {
+            try? uiViewController.startScanning()
+        } else {
+            uiViewController.stopScanning()
         }
+
         
-        if shouldStopScanning {
-           uiViewController.stopScanning()
-        }
+//        if shouldCapturePhoto {
+//            DispatchQueue.main.async {
+//                self.shouldCapturePhoto = false
+//            }
+//            capturePhoto(dataScannerVC: uiViewController)
+//        }
     }
     
     //For debugging an error from NSError, I used ChatGPT
-    private func capturePhoto(dataScannerVC: DataScannerViewController) {
-        Task { @MainActor in
-            do {
-                let photo = try await dataScannerVC.capturePhoto()
-                self.capturedPhoto = .init(image: photo)
-            } catch {
-                let nsError = error as NSError
-                   print("Error domain: \(nsError.domain)")
-                   print("Error code: \(nsError.code)")
-                   print("Description: \(nsError.localizedDescription)")
-            }
-        }
-    }
+//    private func capturePhoto(dataScannerVC: DataScannerViewController) {
+//        Task { @MainActor in
+//            do {
+//                let photo = try await dataScannerVC.capturePhoto()
+//                self.capturedPhoto = .init(image: photo)
+//            } catch {
+//                let nsError = error as NSError
+//                   print("Error domain: \(nsError.domain)")
+//                   print("Error code: \(nsError.code)")
+//                   print("Description: \(nsError.localizedDescription)")
+//            }
+//        }
+//    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(recognizedItems: $recognizedItems)
