@@ -42,9 +42,18 @@ final class MainViewModel: ObservableObject {
         .text(textContentType: textContentType)
     }
     
-    var showStopScanning: Bool {
+    var hasStartedScanning: Bool {
         !extractedItems.isEmpty
     }
+    
+    var preferredText: String {
+        if selectedText.isEmpty {
+            return extractedText
+        } else {
+            return selectedText
+        }
+    }
+    
     
     var extractedText: String {
         extractedItems.compactMap { item -> String? in

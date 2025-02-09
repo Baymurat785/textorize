@@ -11,47 +11,105 @@ import VisionKit
 struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
+    @State var copiedToClipBoard: Bool = false
     
     var body: some View {
-        ZStack {
-            //ID was causing app crash
-            liveImageFeed
-                .environmentObject(vm)
-                .edgesIgnoringSafeArea(.all)
-                .id(vm.textContentType) // potentially, this is causing app to become freeze!!
-            
-            VStack {
-                HStack {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.black.opacity(0.4))
-                            .clipShape(Circle())
-                            .padding([.top, .leading], 16)
+        VStack {
+            ZStack {
+                //ID was causing app crash
+                liveImageFeed
+                    .environmentObject(vm)
+                    .edgesIgnoringSafeArea(.all)
+                    .id(vm.textContentType) // potentially, this is causing app to become freeze!!
+                
+                VStack {
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.black.opacity(0.4))
+                                .clipShape(Circle())
+                                .padding([.top, .leading], 16)
+                        }
+                        
+                        Spacer()
                     }
-                    
                     Spacer()
                 }
-                Spacer()
+            }
+            ZStack {
+                VStack {
+                    headerView
+                    //                .disabled(vm.capturedPhoto != nil)
+                        .padding(.top)
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        CustomSelectableTextView(text: vm.extractedText, selectedText: $vm.selectedText)
+                            .frame(minWidth: 40)
+                    }
+                   /* .frame(height: 400)*/  // FIXME: remove this static height!!
+                    
+                    if vm.hasStartedScanning {
+                        HStack {
+                            Button {
+                                
+                            } label: {
+                                Text("Save")
+                                    .foregroundStyle(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.blue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
+
+                            Spacer()
+                            
+                            Button {
+                                //think of adding haptic feedback!!
+                                UIPasteboard.general.string = vm.preferredText
+                                
+                                withAnimation(.linear) {
+                                    copiedToClipBoard = true
+                                    
+                                }
+                                DispatchQueue.main.asyncAfter (deadline: .now() + 1.5) {
+                                    withAnimation(.linear) {
+                                        copiedToClipBoard = false
+                                    }
+                                }
+                            } label: {
+                                Text("Copy")
+                                    .foregroundStyle(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.blue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
+                        }
+                        .padding()
+                    }
+                }
             }
         }
+        .overlay(content: {
+            if copiedToClipBoard {
+                Text("Copied to Clipboard")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding()
+                    .background(Color.blue.clipShape(RoundedRectangle(cornerRadius: 20)))
+                    .padding(.bottom)
+                    .shadow(radius: 5)
+                    .transition(.move(edge: .top))
+                    .frame(maxHeight: .infinity, alignment: .top)
+            }
+        })
         
-        VStack {
-            headerView
-//                .disabled(vm.capturedPhoto != nil)
-                .padding(.top)
-            
-            VStack(alignment: .leading, spacing: 16) {
-                CustomSelectableTextView(text: vm.extractedText, selectedText: $vm.selectedText)
-                    .frame(minWidth: 40)
-            }
-            .frame(height: 400)  // FIXME: remove this static height!!
-        }
-//        .sheet(item: $vm.capturedPhoto, content: { photo in
+        //        .sheet(item: $vm.capturedPhoto, content: { photo in
 //            VStack() {
 //                LiveTextView(image: photo.image)
 //                Button {
@@ -114,7 +172,7 @@ struct ScannerView: View {
 //                        .font(.system(size: 32))
 //                }
                 
-                if vm.showStopScanning {
+                if vm.hasStartedScanning {
                     Button {
                         vm.shouldScan.toggle()
                     } label: {
