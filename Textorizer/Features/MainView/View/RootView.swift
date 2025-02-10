@@ -11,7 +11,6 @@ struct RootView: View {
     @State private var selection: Tab = .home
     @EnvironmentObject var vm: MainViewModel
     
-    
     var body: some View {
         VStack() {
             if selection == .home {
@@ -37,7 +36,6 @@ enum Tab: Hashable {
 
 
 
-
 struct CustomTabView: View {
     @Binding var selection: Tab
     @Binding var showCamera: Bool
@@ -48,7 +46,8 @@ struct CustomTabView: View {
                 selection = .home
             } label: {
                 Image(systemName: "house")
-//                    .resizable()
+                    .resizable()
+                    .frame(width: 30, height: 30)
 //                    .foregroundStyle(.white)
                     .foregroundStyle(selection == .home ? .blue : .gray)
                     .padding()
@@ -82,7 +81,9 @@ struct CustomTabView: View {
                 selection = .settings
             } label: {
                 Image(systemName: "gear")
-//                    .resizable()
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                
 //                    .foregroundStyle(.white)
                     .foregroundStyle(selection == .settings ? .blue : .gray)
                     .padding()
