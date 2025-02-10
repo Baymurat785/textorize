@@ -7,9 +7,16 @@
 
 import Foundation
 
-enum ViewType: String, Identifiable {
+enum ViewType: String, Identifiable, CaseIterable {
     case camera
     case scanner
     
     var id: String { self.rawValue }
+    
+    var name: String {
+        switch self {
+        case .scanner: "Scanner"
+        case .camera: "Camera"
+        }
+    }
 }
