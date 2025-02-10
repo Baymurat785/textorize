@@ -22,7 +22,8 @@ final class MainViewModel: ObservableObject {
     @Published var selectedText = ""
 
     //MARK: - UI State
-    @Published var activeView: ViewType?
+    @Published var activeView: ViewType = .scanner
+    @Published var showCamera: Bool = false
     @Published var textContentType: DataScannerViewController.TextContentType?
     
     //MARK: - Capture photo
@@ -53,7 +54,6 @@ final class MainViewModel: ObservableObject {
             return selectedText
         }
     }
-    
     
     var extractedText: String {
         extractedItems.compactMap { item -> String? in
