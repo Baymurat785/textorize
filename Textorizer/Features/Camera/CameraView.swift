@@ -13,7 +13,7 @@ struct CameraView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        VStack() {
             switch vm.activeView {
             case .camera:
                 CameraPicker(image: $capturedImage)
@@ -22,18 +22,18 @@ struct CameraView: View {
                 ScannerView()
             }
             
-            VStack {
-                Picker("", selection: $vm.activeView) {
-                    ForEach(ViewType.allCases, id: \.self) {
-                        Text($0.name).tag($0.id)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(alignment: .top)
-                .padding()
-                .containerRelativeFrame(.horizontal, count: 1, spacing: 1, alignment: .center)
-                
-            }
+//            VStack {
+//                Picker("", selection: $vm.activeView) {
+//                    ForEach(ViewType.allCases, id: \.self) {
+//                        Text($0.name).tag($0.id)
+//                    }
+//                }
+//                .pickerStyle(SegmentedPickerStyle())
+//                .frame(alignment: .top)
+//                .padding()
+//                .containerRelativeFrame(.horizontal, count: 1, spacing: 1, alignment: .center)
+//                
+//            }
         }
     }
 }

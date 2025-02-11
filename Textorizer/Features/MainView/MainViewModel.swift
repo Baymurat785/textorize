@@ -25,6 +25,7 @@ final class MainViewModel: ObservableObject {
     @Published var activeView: ViewType = .scanner
     @Published var showCamera: Bool = false
     @Published var textContentType: DataScannerViewController.TextContentType?
+    @Published var copiedToClipBoard: Bool = false
     
     //MARK: - Capture photo
     //    @Published var shouldCapturePhoto = false
