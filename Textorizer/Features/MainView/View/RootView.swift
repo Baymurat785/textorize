@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RootView: View {
     @State private var selection: Tab = .home
@@ -34,21 +35,23 @@ enum Tab: Hashable {
     case settings
 }
 
-
-
 struct CustomTabView: View {
     @Binding var selection: Tab
     @Binding var showCamera: Bool
+    @State var settings = 0
+    @State var home = 0
+
     var body: some View {
         HStack {
             //Home
             Button {
                 selection = .home
+                home += 1
             } label: {
                 Image(systemName: "house")
-                    .resizable()
-                    .frame(width: 30, height: 30)
 //                    .foregroundStyle(.white)
+                    .resizable()
+                    .frame(width: 20, height: 20)
                     .foregroundStyle(selection == .home ? .blue : .gray)
                     .padding()
 //                    .background(
@@ -57,6 +60,7 @@ struct CustomTabView: View {
 //                    )
 //                    .clipShape(RoundedRectangle(cornerRadius: 20))
             }
+            .symbolEffect(.bounce, value: home)
             
             Spacer()
             
@@ -64,14 +68,15 @@ struct CustomTabView: View {
             Button {
                 showCamera = true
             } label: {
-                Image(systemName: "camera")
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background(
-                        Rectangle()
-                            .fill(.blue)
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                Image(systemName: "camera.fill")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.blue)
+//                    .background(
+//                        Rectangle()
+//                            .fill(.blue)
+//                    )
+//                    .clipShape(RoundedRectangle(cornerRadius: 20))
             }
             
             Spacer()
@@ -79,11 +84,11 @@ struct CustomTabView: View {
             //settinga
             Button {
                 selection = .settings
+                settings += 1
             } label: {
                 Image(systemName: "gear")
                     .resizable()
-                    .frame(width: 30, height: 30)
-                
+                    .frame(width: 20, height: 20)
 //                    .foregroundStyle(.white)
                     .foregroundStyle(selection == .settings ? .blue : .gray)
                     .padding()
@@ -93,14 +98,10 @@ struct CustomTabView: View {
 //                    )
 //                    .clipShape(RoundedRectangle(cornerRadius: 20))
             }
+            .symbolEffect(.bounce, value: settings)
 
         }
         .frame(maxWidth: .infinity)
-        .padding([.horizontal, .top])
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.blue.opacity(0.1))
-                .ignoresSafeArea()
-        )
+        .padding([.horizontal])
     }
 }

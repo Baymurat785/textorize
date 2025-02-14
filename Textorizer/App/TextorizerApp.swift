@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct TextorizerApp: App {
@@ -15,16 +16,15 @@ struct TextorizerApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(vm)
-                .task {
-                    await vm.requestAccess()
-                }
                 .fullScreenCover(isPresented: $vm.showCamera) {
                     CameraView()
                         .environmentObject(vm)
                 }
+                .modelContainer(for: [AllContent.self, EmailContent.self, PhoneContent.self, URLContent.self, AddressContent.self])
         }
     }
     
+#warning("Handle the case when the user does not allow the access for the camera for the first time")
     private var camera: some View {
         // Fix this request accesss!!
         VStack {
