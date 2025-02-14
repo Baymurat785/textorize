@@ -10,7 +10,6 @@ import VisionKit
 
 @MainActor
 struct LiveTextView: UIViewRepresentable {
-    
     let image: UIImage
     let imageView = LiveTextImageView()
     let analyzer = ImageAnalyzer()

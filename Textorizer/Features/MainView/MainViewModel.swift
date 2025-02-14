@@ -24,25 +24,23 @@ final class MainViewModel: ObservableObject {
     //MARK: - UI State
     @Published var activeView: ViewType = .scanner
     @Published var showCamera: Bool = false
-    @Published var textContentType: DataScannerViewController.TextContentType?
+    @Published var textContentType: TextContentTypeOption = .all
     @Published var copiedToClipBoard: Bool = false
     
     //MARK: - Capture photo
     //    @Published var shouldCapturePhoto = false
     //    @Published var capturedPhoto: IdentifiableImage? = nil
     
-    //Consider improving this!
-    let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = [
-        ("All", .none),
-        ("URL", .URL),
-        ("Phone", .telephoneNumber),
-        ("Email", .emailAddress),
-        ("Address", .fullStreetAddress)
-    ]
+    //MARK: - Improved with ChatGPT
+    let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = TextContentTypeOption.allCases.map {
+        ($0.rawValue, $0.scannerType)
+    }
+    
 
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
-        .text(textContentType: textContentType)
+        .text(textContentType: textContentType.scannerType)
     }
+    //MARK: -
     
     var hasStartedScanning: Bool {
         !extractedItems.isEmpty

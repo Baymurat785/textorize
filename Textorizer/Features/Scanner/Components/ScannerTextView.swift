@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ScannerTextView: View {
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var vm: MainViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         ZStack {
@@ -26,7 +29,30 @@ struct ScannerTextView: View {
                 if vm.hasStartedScanning {
                     HStack {
                         Button {
+                            switch vm.textContentType {
+                            case .all:
+                                let all = AllContent(title: "New ALL", text: vm.extractedText)
+                                modelContext.insert(all)
+                            case .url:
+                                let url = URLContent(title: "New URL", text: vm.extractedText)
+                                modelContext.insert(url)
+                            case .phone:
+                                let phone = PhoneContent(title: "New Phone", text: vm.extractedText)
+                                modelContext.insert(phone)
+                            case .email:
+                                let email = EmailContent(title: "New Email", text: vm.extractedText)
+                                modelContext.insert(email)
+                            case .address:
+                                let address = AddressContent(title: "New Address", address: vm.extractedText)
+                                modelContext.insert(address)
+                            }
                             
+                            do {
+                                try modelContext.save()
+                                
+                            } catch {
+                                print("Error saving: \(error.localizedDescription)")
+                            }
                         } label: {
                             Text("Save")
                                 .foregroundStyle(.white)
@@ -39,7 +65,7 @@ struct ScannerTextView: View {
                         Spacer()
                         
                         Button {
-                            //think of adding haptic feedback!!
+                            #warning("hink of adding haptic feedback!!")
                             UIPasteboard.general.string = vm.preferredText
                             
                             withAnimation {
@@ -70,14 +96,22 @@ struct ScannerTextView: View {
         VStack {
             HStack {
                 Picker("Text content type", selection: $vm.textContentType) {
-                    ForEach(vm.textContentTypes, id: \.self.textContentType) {
-                        Text($0.title).tag($0.textContentType)
+                    ForEach(TextContentTypeOption.allCases, id: \.id) {type in
+                        Text(type.title).tag(type)
                     }
                 }
                 .pickerStyle(.segmented)
             }
             
             HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                }
+                
+                Spacer()
+                
                 Text(vm.headerText)
                     .padding(.top)
                 //

@@ -17,36 +17,27 @@ struct ScannerView: View {
             VStack {
                 ZStack {
                     //ID was causing app crash
+                    //FIXME: Change name
                     liveImageFeed
                         .environmentObject(vm)
                         .edgesIgnoringSafeArea(.all)
                         .id(vm.textContentType) // potentially, this is causing app to become freeze!!
                     
-                    VStack {
-                        HStack {
-                            Button {
-                                dismiss()
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background(Color.black.opacity(0.4))
-                                    .clipShape(Circle())
-                                    .padding([.top, .leading], 16)
-                            }
-                            
-                            Spacer()
-                        }
-                        Spacer()
-                    }
                 }
                 .sheet(isPresented: .constant(true)) {
-                    ScannerTextView()
-                        .background(Color.gray.opacity(0.3))
-                        .environmentObject(vm)
-                        .presentationDetents([.height(geometry.size.height * 0.2), .medium])
-                        .interactiveDismissDisabled()
+                    VStack {
+                        VStack {
+                           
+                            Spacer()
+                        }
+                        
+                        ScannerTextView(dismiss: _dismiss)
+                            .environmentObject(vm)
+                    }
+                    .background(Color.gray.opacity(0.3))
+                    .presentationDetents([.height(geometry.size.height * 0.2), .medium])
+                    .interactiveDismissDisabled()
+
                 }
             }
             .overlay(content: {
