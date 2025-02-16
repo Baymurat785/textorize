@@ -15,57 +15,37 @@ struct ScannerView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                ZStack {
+                ZStack() {
                     //ID was causing app crash
                     //FIXME: Change name
-                    liveImageFeed
-                        .environmentObject(vm)
-                        .edgesIgnoringSafeArea(.all)
-                        .id(vm.textContentType) // potentially, this is causing app to become freeze!!
+                    DataScannerView(
+                        recognizedItems: $vm.recognizedItems,
+                        shouldScan: $vm.shouldScan,
+                        recognizedDataType: vm.recognizedDataType
+                    )
+                    .edgesIgnoringSafeArea(.all)
+                    .id(vm.textContentType) // potentially, this is causing app to become freeze!!
                     
-                }
-                .sheet(isPresented: .constant(true)) {
                     VStack {
-                        VStack {
-                           
-                            Spacer()
-                        }
+                        HeaderView(geometry: geometry, dismiss: { dismiss() })
                         
-                        ScannerTextView(dismiss: _dismiss)
-                            .environmentObject(vm)
+                        Spacer()
+                        
+                        FooterView(geometry: geometry)
+                            
+                        
                     }
-                    .background(Color.gray.opacity(0.3))
-                    .presentationDetents([.height(geometry.size.height * 0.2), .medium])
-                    .interactiveDismissDisabled()
-
+                 
                 }
+                .edgesIgnoringSafeArea(.all)
             }
             .overlay(content: {
-                if vm.copiedToClipBoard {
-                    Text("Copied to Clipboard")
-                        .font(.system(.body, design: .rounded, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(Color.blue.clipShape(RoundedRectangle(cornerRadius: 20)))
-                        .padding(.bottom)
-                        .shadow(radius: 5)
-                        .transition(.move(edge: .top))
-                        .frame(maxHeight: .infinity, alignment: .top)
+                if vm.copied {
+                    ToastView(text: "Copied to Clipboard")
+                } else if vm.saved {
+                    ToastView(text: "Saved")
                 }
             })
-            
-            //        .sheet(item: $vm.capturedPhoto, content: { photo in
-    //            VStack() {
-    //                LiveTextView(image: photo.image)
-    //                Button {
-    //                    vm.capturedPhoto = nil
-    //                } label: {
-    //                    Image(systemName: "xmark.circle.fill")
-    //                }
-    //                .foregroundStyle(.white)
-    //                .padding([.trailing, .top])
-    //            }
-    //        })
             .task {
                 await vm.requestAccess()
             }
@@ -74,26 +54,8 @@ struct ScannerView: View {
                     vm.extractedItems = vm.recognizedItems
                 }
             }
-
+            
         }
-    }
-    
-    @ViewBuilder
-    private var liveImageFeed: some View {
-//        if let capturedPhoto = vm.capturedPhoto {
-//            Image(uiImage: capturedPhoto.image)
-//                .resizable()
-//                .scaledToFit()
-//            
-//        } else {
-            DataScannerView(
-                recognizedItems: $vm.recognizedItems,
-//                shouldCapturePhoto: $vm.shouldCapturePhoto,
-//                capturedPhoto: $vm.capturedPhoto,
-                shouldScan: $vm.shouldScan,
-                recognizedDataType: vm.recognizedDataType
-            )
-//        }
     }
 }
 

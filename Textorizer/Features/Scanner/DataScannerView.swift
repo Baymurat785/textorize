@@ -10,19 +10,15 @@ import VisionKit
 
 struct DataScannerView: UIViewControllerRepresentable {
     @Binding var recognizedItems: [RecognizedItem]
-//    @Binding var shouldCapturePhoto: Bool
-//    @Binding var capturedPhoto: IdentifiableImage?
     @Binding var shouldScan: Bool
-    
     let recognizedDataType: DataScannerViewController.RecognizedDataType
     
     func makeUIViewController(context: Context) -> DataScannerViewController {
-        
         let vc = DataScannerViewController(
             recognizedDataTypes: [recognizedDataType],
             qualityLevel: .accurate,
             recognizesMultipleItems: true,
-            isGuidanceEnabled: true,
+            isGuidanceEnabled: false,
             isHighlightingEnabled: true
         )
         vc.delegate = context.coordinator
@@ -37,30 +33,7 @@ struct DataScannerView: UIViewControllerRepresentable {
         } else {
             uiViewController.stopScanning()
         }
-
-        
-//        if shouldCapturePhoto {
-//            DispatchQueue.main.async {
-//                self.shouldCapturePhoto = false
-//            }
-//            capturePhoto(dataScannerVC: uiViewController)
-//        }
     }
-    
-    //For debugging an error from NSError, I used ChatGPT
-//    private func capturePhoto(dataScannerVC: DataScannerViewController) {
-//        Task { @MainActor in
-//            do {
-//                let photo = try await dataScannerVC.capturePhoto()
-//                self.capturedPhoto = .init(image: photo)
-//            } catch {
-//                let nsError = error as NSError
-//                   print("Error domain: \(nsError.domain)")
-//                   print("Error code: \(nsError.code)")
-//                   print("Description: \(nsError.localizedDescription)")
-//            }
-//        }
-//    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(recognizedItems: $recognizedItems)
@@ -102,5 +75,4 @@ struct DataScannerView: UIViewControllerRepresentable {
 struct IdentifiableImage: Identifiable {
     let id = UUID()
     let image: UIImage
-    
 }
