@@ -19,6 +19,7 @@ struct CustomSelectableTextView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let textView = CustomTextView()
         textView.text = text
+        textView.textColor = .white
         textView.isEditable = false
         textView.isSelectable = true
         textView.backgroundColor = .clear

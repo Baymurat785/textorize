@@ -25,13 +25,20 @@ final class MainViewModel: ObservableObject {
     @Published var activeView: ViewType = .scanner
     @Published var showCamera: Bool = false
     @Published var textContentType: TextContentTypeOption = .all
-    @Published var copiedToClipBoard: Bool = false
+    
+    //for toast views
+    @Published var copied: Bool = false
+    @Published var saved: Bool = false
     
     //MARK: - Capture photo
     //    @Published var shouldCapturePhoto = false
     //    @Published var capturedPhoto: IdentifiableImage? = nil
     
-    //MARK: - Improved with ChatGPT
+    
+    @Published var showExtractedText = false
+    @Published var showOpenedView = false
+    
+    //MARK: Improved with ChatGPT
     let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = TextContentTypeOption.allCases.map {
         ($0.rawValue, $0.scannerType)
     }
