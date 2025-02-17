@@ -32,13 +32,12 @@ struct ScannerView: View {
                         Spacer()
                         
                         FooterView(geometry: geometry)
-                            
-                        
                     }
-                 
                 }
                 .edgesIgnoringSafeArea(.all)
             }
+            
+            //FIXME: Fix this!
             .overlay(content: {
                 if vm.copied {
                     ToastView(text: "Copied to Clipboard")
@@ -54,7 +53,6 @@ struct ScannerView: View {
                     vm.extractedItems = vm.recognizedItems
                 }
             }
-            
         }
     }
 }

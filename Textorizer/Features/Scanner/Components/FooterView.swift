@@ -12,7 +12,6 @@ struct FooterView: View {
     @Environment(\.modelContext) var modelContext
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
-    
     @State var rotationAngle: Double = 0
 
     var body: some View {

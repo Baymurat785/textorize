@@ -16,29 +16,21 @@ struct HeaderView: View {
     
     var body: some View {
         HStack {
-            Button {
-                switchTorch.toggle()
-                //FIXME: This causes camera disbales when it is on
-                toggleTorch(on: switchTorch)
-                
-            } label: {
-                Image(systemName: "bolt.fill")
-    //                .resizable()
-                    .font(.system(size: 18,weight: .thin))
-                    .foregroundStyle(switchTorch ? Color.orange : Color.black)
-                    .padding(8)
-                    .background(
-                        Circle()
-                            .fill(.white)
-                    )
-            }
-
-            Spacer()
-            
-            if vm.showOpenedView {
-                PulsatingDots()
-                    .environmentObject(vm)
-            }
+//            Button {
+//                switchTorch.toggle()
+//                //FIXME: This causes camera disbales when it is on
+//                toggleTorch(on: switchTorch)
+//            } label: {
+//                Image(systemName: "bolt.fill")
+//                //                .resizable()
+//                    .font(.system(size: 18,weight: .thin))
+//                    .foregroundStyle(switchTorch ? Color.orange : Color.black)
+//                    .padding(8)
+//                    .background(
+//                        Circle()
+//                            .fill(.white)
+//                    )
+//            }
             
             Spacer()
             
@@ -46,7 +38,7 @@ struct HeaderView: View {
                 dismiss()
             } label: {
                 Image(systemName: "xmark")
-    //                .resizable()
+                //                .resizable()
                     .font(.system(size: 18,weight: .regular))
                     .foregroundStyle(Color.black)
                     .padding(8)
@@ -63,20 +55,20 @@ struct HeaderView: View {
         .background(.black.opacity(0.5))
     }
     
-    private func toggleTorch(on: Bool) {
-        guard let device = AVCaptureDevice.default(for: .video) else { return }
+    func toggleTorch(on: Bool) {
+        DispatchQueue.main.async {
+            guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else {
+                print("Torch is not available")
+                return
+            }
 
-        if device.hasTorch {
             do {
                 try device.lockForConfiguration()
                 device.torchMode = on ? .on : .off
                 device.unlockForConfiguration()
             } catch {
-                print("Torch could not be used")
+                print("Torch could not be used: \(error.localizedDescription)")
             }
-        } else {
-            print("Torch is not available")
         }
     }
-
 }

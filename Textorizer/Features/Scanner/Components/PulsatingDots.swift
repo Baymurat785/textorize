@@ -13,7 +13,7 @@ struct PulsatingDots: View {
 
     var body: some View {
         HStack() {
-            if vm.recognizedItems.count == 0 {
+            if vm.extractedItems.count == 0 {
                 ForEach(0..<3) { index in
                     Circle()
                         .frame(width: 14, height: 14)
@@ -25,7 +25,7 @@ struct PulsatingDots: View {
                     
                 }
             } else {
-                Text("^[\(vm.recognizedItems.count) item](inflect: true)")
+                Text("^[\(vm.extractedItems.count) item](inflect: true)")
                     .font(.system(size: 14.0, weight: .medium, design: .default))
                     .foregroundStyle(.black)
                     .padding(.vertical)

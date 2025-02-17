@@ -47,6 +47,4 @@ enum TextContentTypeOption: String, CaseIterable, Identifiable {
             "Address"
         }
     }
-    
-//    var query:
 }
