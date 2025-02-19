@@ -11,16 +11,22 @@ import SwiftData
 @main
 struct TextorizerApp: App {
     @StateObject private var vm = MainViewModel()
+    @StateObject var appCore = AppCore.shared
+    @State private var hasOnboardingSeen = false
     
     var body: some Scene {
         WindowGroup {
-            MainView()
-                .environmentObject(vm)
-                .fullScreenCover(isPresented: $vm.showCamera) {
-                    CameraView()
-                        .environmentObject(vm)
-                }
-                .modelContainer(for: [AllContent.self, EmailContent.self, PhoneContent.self, URLContent.self, AddressContent.self])
+            if appCore.hasOnboardingSeen {
+                MainView()
+                    .environmentObject(vm)
+                    .fullScreenCover(isPresented: $vm.showCamera) {
+                        CameraView()
+                            .environmentObject(vm)
+                    }
+                    .modelContainer(for: [AllContent.self, EmailContent.self, PhoneContent.self, URLContent.self, AddressContent.self])
+            } else {
+                OnboardingView()
+            }
         }
     }
     
