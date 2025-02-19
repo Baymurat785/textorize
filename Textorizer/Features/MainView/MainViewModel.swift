@@ -26,23 +26,22 @@ final class MainViewModel: ObservableObject {
     @Published var showCamera: Bool = false
     @Published var textContentType: TextContentTypeOption = .all
     
-    //for toast views
-    @Published var copied: Bool = false
-    @Published var saved: Bool = false
+    //for toast view
+    @Published var toastText = ""
+    @Published var showToast = false
     
     //MARK: - Capture photo
     //    @Published var shouldCapturePhoto = false
     //    @Published var capturedPhoto: IdentifiableImage? = nil
     
-    
     @Published var showExtractedText = false
     @Published var showOpenedView = false
+    @Published var selectedFileType: FileType = .pdf
     
     //MARK: Improved with ChatGPT
     let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = TextContentTypeOption.allCases.map {
         ($0.rawValue, $0.scannerType)
     }
-    
 
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
         .text(textContentType: textContentType.scannerType)

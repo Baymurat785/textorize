@@ -11,7 +11,7 @@ struct ToastView: View {
     let text: String
     
     var body: some View {
-        Text("Copied to Clipboard")
+        Text(text)
             .font(.system(.body, design: .rounded, weight: .semibold))
             .foregroundStyle(.white)
             .padding()

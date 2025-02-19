@@ -7,6 +7,7 @@
 
 import SwiftUI
 import VisionKit
+import PDFKit
 
 struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
@@ -39,10 +40,8 @@ struct ScannerView: View {
             
             //FIXME: Fix this!
             .overlay(content: {
-                if vm.copied {
-                    ToastView(text: "Copied to Clipboard")
-                } else if vm.saved {
-                    ToastView(text: "Saved")
+                if vm.showToast {
+                    ToastView(text: vm.toastText)
                 }
             })
             .task {

@@ -15,37 +15,32 @@ struct HeaderView: View {
     @State var switchTorch = false
     
     var body: some View {
-        HStack {
-//            Button {
-//                switchTorch.toggle()
-//                //FIXME: This causes camera disbales when it is on
-//                toggleTorch(on: switchTorch)
-//            } label: {
-//                Image(systemName: "bolt.fill")
-//                //                .resizable()
-//                    .font(.system(size: 18,weight: .thin))
-//                    .foregroundStyle(switchTorch ? Color.orange : Color.black)
-//                    .padding(8)
-//                    .background(
-//                        Circle()
-//                            .fill(.white)
-//                    )
-//            }
+        ZStack {
+            HStack {
+                Spacer()
+                
+                CustomMenuView(selection: $vm.selectedFileType, titleProvider: { $0.title })
+                
+                Spacer()
+            }
             
-            Spacer()
-            
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                //                .resizable()
-                    .font(.system(size: 18,weight: .regular))
-                    .foregroundStyle(Color.black)
-                    .padding(8)
-                    .background(
-                        Circle()
-                            .fill(.white)
-                    )
+            HStack {
+                
+                Spacer()
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                    //                .resizable()
+                        .font(.system(size: 18,weight: .regular))
+                        .foregroundStyle(Color.black)
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(.white)
+                        )
+                }
             }
         }
         .padding(.horizontal)
@@ -61,7 +56,7 @@ struct HeaderView: View {
                 print("Torch is not available")
                 return
             }
-
+            
             do {
                 try device.lockForConfiguration()
                 device.torchMode = on ? .on : .off

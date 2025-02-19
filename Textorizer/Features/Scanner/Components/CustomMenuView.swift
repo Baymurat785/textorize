@@ -7,23 +7,26 @@
 
 import SwiftUI
 
-struct CustomMenuView: View {
-    @Binding var selection: TextContentTypeOption
+//Made this generic with the help of ChatGPT
+
+struct CustomMenuView<T: CaseIterable & Identifiable>: View where T.AllCases: RandomAccessCollection {
+    @Binding var selection: T
+    let titleProvider: (T) -> String
+    
     var body: some View {
         Menu {
-            ForEach(TextContentTypeOption.allCases) { type in
+            ForEach(T.allCases) { option in
                 Button {
-                    selection = type
+                    selection = option
                 } label: {
-                    Text(type.title)
+                    Text(titleProvider(option))
                         .font(.system(size: 14.0, weight: .medium, design: .default))
                         .foregroundColor(.black)
                         .multilineTextAlignment(.leading)
                 }
-                
             }
         } label: {
-            Text(selection.title)
+            Text(titleProvider(selection))
                 .font(.system(size: 14.0, weight: .medium, design: .default))
                 .foregroundColor(.black)
                 .multilineTextAlignment(.leading)
@@ -33,10 +36,5 @@ struct CustomMenuView: View {
                         .fill(.white)
                 )
         }
-        
     }
 }
-//
-//#Preview {
-//    CustomMenuView()
-//}
