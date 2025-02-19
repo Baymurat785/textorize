@@ -12,31 +12,118 @@ struct MainView: View {
     @EnvironmentObject var vm: MainViewModel
     @State var selectedType: TextContentTypeOption?
     @State var showItemsView = false
+    @Namespace var animation
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Spacer()
-                List {
-                    ForEach(TextContentTypeOption.allCases, id: \.id) { type in
+                
+                Button {
+                    showItemsView = true
+                    selectedType = .all
+                } label: {
+                    if #available(iOS 18.0, *) {
+                        HStack(alignment: .top) {
+                            Text(TextContentTypeOption.all.title)
+                                .font(.system(size: 24))
+                                .foregroundStyle(.black)
+                                .padding()
+                            
+                            Spacer()
+                        }
+                        .containerRelativeFrame(.vertical) { height, _ in
+                            height * 0.2
+                        }
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .matchedTransitionSource(id: TextContentTypeOption.all.id, in: animation)
+                    } else {
+                        HStack(alignment: .top) {
+                            Text(TextContentTypeOption.all.title)
+                                .font(.system(size: 24))
+                                .foregroundStyle(.black)
+                                .padding()
+                            
+                            Spacer()
+                        }
+                        .containerRelativeFrame(.vertical) { height, _ in
+                            height * 0.2
+                        }
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
+                }
+
+                //This spacer is static!!!
+                Spacer(minLength: 100)
+                
+                VStack(spacing: 20) {
+                    //this is becoming complex
+                    ForEach(Array(TextContentTypeOption.allCases.dropFirst().enumerated()), id: \.element.id) {  index, type in
                         Button {
                             showItemsView = true
                             selectedType = type
                         } label: {
-                            HStack {
-                                Text(type.title)
+                            
+                            VStack {
+                                HStack {
+                                    Text(type.title)
+                                        .font(.system(size: 14))
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                    
+                                }
+                                .foregroundStyle(Color.black)
+                                
+                                if index != 3 {
+                                    Divider()
+                                        .padding(.horizontal, 4)
+                                }
                             }
                         }
                     }
                 }
+                .padding()
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                
                 Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        vm.showCamera = true
+                    } label: {
+                        Image(systemName: "text.viewfinder")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(.white)
+                            .padding()
+                            .background(
+                                Rectangle()
+                                    .fill(.blue)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        
+                    }
+                }
             }
             .padding()
             .navigationDestination(isPresented: $showItemsView) {
 #warning("There is boilerplate code: i wanted to use predicate filter query but it caused app to freeze")
-
+                
                 switch selectedType {
                 case .all:
-                    AllContentView()
+                    if #available(iOS 18.0, *) {
+                        AllContentView()
+                            .navigationTransition(.zoom(sourceID: TextContentTypeOption.all.id, in: animation))
+                    } else {
+                        AllContentView()
+                    }
                 case .url:
                     URLContentView()
                 case .phone:

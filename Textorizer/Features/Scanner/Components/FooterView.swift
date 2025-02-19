@@ -13,22 +13,18 @@ struct FooterView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
     @State var rotationAngle: Double = 0
-
+    @Environment(\.displayScale) var displayScale
+    
     var body: some View {
         VStack {
             ZStack {
                 HStack {
                     if !vm.showOpenedView {
-                        CustomMenuView(selection: $vm.textContentType)
+                        CustomMenuView(selection: $vm.textContentType, titleProvider: { $0.title })
                     } else {
-                        Button {
-                            //Action goes here
-                        } label: {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 35, weight: .medium, design: .default))
-                                .foregroundStyle(.white)
+                        if vm.hasStartedScanning {
+                            ShareButtonView(displayScale: displayScale)
                         }
-
                     }
                     
                     Spacer()
@@ -55,12 +51,11 @@ struct FooterView: View {
                     
                     Spacer()
                 }
-              
                 
                 HStack {
                     Spacer()
                     
-                    #warning("Fix animation")
+#warning("Fix animation")
                     Button(action: {
                         withAnimation() {
                             vm.showExtractedText.toggle()
@@ -82,7 +77,7 @@ struct FooterView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(.white)
                             )
-                           
+                        
                     })
                     .frame(alignment: .trailing)
                 }
@@ -96,7 +91,7 @@ struct FooterView: View {
                         .frame(minWidth: 40)
                 }
             }
-                        
+            
             if vm.hasStartedScanning && vm.showExtractedText {
                 HStack {
                     Button {
@@ -124,6 +119,8 @@ struct FooterView: View {
                         } catch {
                             print("Error saving: \(error.localizedDescription)")
                         }
+                        vm.toastText = "Saved"
+                        displayToast()
                     } label: {
                         Text("Save")
                             .foregroundStyle(.white)
@@ -136,18 +133,8 @@ struct FooterView: View {
                     Spacer()
                     
                     Button {
-#warning("think of adding haptic feedback!!")
-                        UIPasteboard.general.string = vm.preferredText
-                        
-                        withAnimation {
-                            vm.copied = true
-                            
-                        }
-                        DispatchQueue.main.asyncAfter (deadline: .now() + 1.5) {
-                            withAnimation {
-                                vm.copied = false
-                            }
-                        }
+                        vm.toastText = "Copied to Clipboard"
+                        displayToast()
                     } label: {
                         Text("Copy")
                             .foregroundStyle(.white)
@@ -158,11 +145,27 @@ struct FooterView: View {
                     }
                 }
                 .padding()
+                .sensoryFeedback(.success, trigger: vm.toastText)
             }
             
             Spacer()
         }
         .background(.black.opacity(0.7))
         .frame(height: vm.showExtractedText ? geometry.size.height * 0.7:    geometry.size.height * 0.2)
+    }
+    
+    
+    private func displayToast() {
+        UIPasteboard.general.string = vm.preferredText
+        
+        withAnimation {
+            vm.showToast = true
+            
+        }
+        DispatchQueue.main.asyncAfter (deadline: .now() + 1.5) {
+            withAnimation {
+                vm.showToast = false
+            }
+        }
     }
 }

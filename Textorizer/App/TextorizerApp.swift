@@ -14,7 +14,7 @@ struct TextorizerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView()
+            MainView()
                 .environmentObject(vm)
                 .fullScreenCover(isPresented: $vm.showCamera) {
                     CameraView()
