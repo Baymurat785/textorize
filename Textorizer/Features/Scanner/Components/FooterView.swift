@@ -14,6 +14,8 @@ struct FooterView: View {
     @Environment(\.dismiss) var dismiss
     @State var rotationAngle: Double = 0
     @Environment(\.displayScale) var displayScale
+    @State private var showAlert = false
+    @State private var text = "New"
     
     var body: some View {
         VStack {
@@ -95,32 +97,14 @@ struct FooterView: View {
             if vm.hasStartedScanning && vm.showExtractedText {
                 HStack {
                     Button {
-                        switch vm.textContentType {
-                        case .all:
+                        if vm.textContentType == .all {
                             let all = AllContent(title: "New ALL", text: vm.extractedText)
                             modelContext.insert(all)
-                        case .url:
-                            let url = URLContent(title: "New URL", text: vm.extractedText)
-                            modelContext.insert(url)
-                        case .phone:
-                            let phone = PhoneContent(title: "New Phone", text: vm.extractedText)
-                            modelContext.insert(phone)
-                        case .email:
-                            let email = EmailContent(title: "New Email", text: vm.extractedText)
-                            modelContext.insert(email)
-                        case .address:
-                            let address = AddressContent(title: "New Address", address: vm.extractedText)
-                            modelContext.insert(address)
+                            save()
+                        } else {
+                            showAlert = true
                         }
                         
-                        do {
-                            try modelContext.save()
-                            
-                        } catch {
-                            print("Error saving: \(error.localizedDescription)")
-                        }
-                        vm.toastText = "Saved"
-                        displayToast()
                     } label: {
                         Text("Save")
                             .foregroundStyle(.white)
@@ -152,8 +136,49 @@ struct FooterView: View {
         }
         .background(.black.opacity(0.7))
         .frame(height: vm.showExtractedText ? geometry.size.height * 0.7:    geometry.size.height * 0.2)
+        
+        .alert("Alert Title!", isPresented: $showAlert) {
+            TextField(text: $text) {}
+#warning("Fix the namings")
+
+            Button("Submit") {
+                switch vm.textContentType {
+                case .all:
+                    break
+                case .url:
+                    let url = URLContent(title: text.isEmpty ? "New URL" : text, text: vm.extractedText)
+                    modelContext.insert(url)
+                case .phone:
+                    let phone = PhoneContent(title:  text.isEmpty ? "New phone" : text, text: vm.extractedText)
+                    modelContext.insert(phone)
+                case .email:
+                    let email = EmailContent(title:  text.isEmpty ? "New email" : text, text: vm.extractedText)
+                    modelContext.insert(email)
+                case .address:
+                    let address = AddressContent(title:  text.isEmpty ? "New address" : text, address: vm.extractedText)
+                    modelContext.insert(address)
+                }
+                save()
+            }
+            Button("Skip") {
+                print("Skip")
+            }
+        } message: {
+            Text("Enter channel name")
+        }
+        
     }
     
+    private func save() {
+        do {
+            try modelContext.save()
+            
+        } catch {
+            print("Error saving: \(error.localizedDescription)")
+        }
+        vm.toastText = "Saved"
+        displayToast()
+    }
     
     private func displayToast() {
         UIPasteboard.general.string = vm.preferredText

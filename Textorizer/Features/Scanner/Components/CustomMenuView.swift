@@ -12,6 +12,8 @@ import SwiftUI
 struct CustomMenuView<T: CaseIterable & Identifiable>: View where T.AllCases: RandomAccessCollection {
     @Binding var selection: T
     let titleProvider: (T) -> String
+    var backgroundColor: Color = .white
+    var colorText: Color = .black
     
     var body: some View {
         Menu {
@@ -21,19 +23,19 @@ struct CustomMenuView<T: CaseIterable & Identifiable>: View where T.AllCases: Ra
                 } label: {
                     Text(titleProvider(option))
                         .font(.system(size: 14.0, weight: .medium, design: .default))
-                        .foregroundColor(.black)
+                        .foregroundColor(colorText)
                         .multilineTextAlignment(.leading)
                 }
             }
         } label: {
             Text(titleProvider(selection))
                 .font(.system(size: 14.0, weight: .medium, design: .default))
-                .foregroundColor(.black)
+                .foregroundColor(colorText)
                 .multilineTextAlignment(.leading)
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.white)
+                        .fill(backgroundColor)
                 )
         }
     }

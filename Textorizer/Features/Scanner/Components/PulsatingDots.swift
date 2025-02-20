@@ -17,7 +17,7 @@ struct PulsatingDots: View {
                 ForEach(0..<3) { index in
                     Circle()
                         .frame(width: 14, height: 14)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.white)
                         .padding(.vertical)
                         .padding(.horizontal, 6)
                         .opacity(animate ? 0.3 : 1)
@@ -27,7 +27,7 @@ struct PulsatingDots: View {
             } else {
                 Text("^[\(vm.extractedItems.count) item](inflect: true)")
                     .font(.system(size: 14.0, weight: .medium, design: .default))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.white)
                     .padding(.vertical)
                     .padding(.horizontal, 6)
             }
@@ -36,9 +36,5 @@ struct PulsatingDots: View {
             animate.toggle()
         }
         .padding(.horizontal, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.white)
-        )
     }
 }

@@ -23,7 +23,7 @@ struct TextorizerApp: App {
                         CameraView()
                             .environmentObject(vm)
                     }
-                    .modelContainer(for: [AllContent.self, EmailContent.self, PhoneContent.self, URLContent.self, AddressContent.self])
+                    .modelContainer(for: [AddressContent.self, AllContent.self, EmailContent.self, PhoneContent.self, URLContent.self])
             } else {
                 OnboardingView()
             }

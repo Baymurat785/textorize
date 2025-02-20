@@ -13,7 +13,7 @@ final class AddressContent {
     var id: UUID = UUID()
     var title: String
     var address: String
-    var date: Date = Date()
+    var date: String = Date().formattedStyle()
 
     init(title: String, address: String) {
         self.title = title
