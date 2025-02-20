@@ -39,9 +39,12 @@ struct CustomSelectableTextView: UIViewRepresentable {
             self.parent = parent
         }
 
+        //Fixed bug with the help of chat GPT
         func textViewDidChangeSelection(_ textView: UITextView) {
             if let range = textView.selectedTextRange {
-                parent.selectedText = textView.text(in: range) ?? ""
+                DispatchQueue.main.async { [weak self] in
+                    self?.parent.selectedText = textView.text(in: range) ?? ""
+                }
             }
         }
     }

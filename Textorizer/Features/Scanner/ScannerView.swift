@@ -49,7 +49,9 @@ struct ScannerView: View {
             }
             .onChange(of: vm.recognizedItems) {
                 if !vm.recognizedItems.isEmpty {
-                    vm.extractedItems = vm.recognizedItems
+                    DispatchQueue.main.async {
+                        vm.extractedItems = vm.recognizedItems
+                    }
                 }
             }
         }
