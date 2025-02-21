@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+#warning("Add search function")
 struct MainView: View {
     @EnvironmentObject var vm: MainViewModel
     @State var selectedType: TextContentTypeOption?
@@ -114,8 +114,6 @@ struct MainView: View {
             }
             .padding()
             .navigationDestination(isPresented: $showItemsView) {
-#warning("There is boilerplate code: i wanted to use predicate filter query but it caused app to freeze")
-                
                 switch selectedType {
                 case .all:
                     if #available(iOS 18.0, *) {

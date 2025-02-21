@@ -8,7 +8,6 @@
 import SwiftUI
 
 //Made this generic with the help of ChatGPT
-
 struct CustomMenuView<T: CaseIterable & Identifiable>: View where T.AllCases: RandomAccessCollection {
     @Binding var selection: T
     let titleProvider: (T) -> String

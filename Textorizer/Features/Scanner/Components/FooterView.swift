@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import TipKit
 
+#warning("Change the text in tips")
 struct FooterView: View {
     let geometry: GeometryProxy
     @Environment(\.modelContext) var modelContext
@@ -15,14 +17,16 @@ struct FooterView: View {
     @State var rotationAngle: Double = 0
     @Environment(\.displayScale) var displayScale
     @State private var showAlert = false
-    @State private var text = "New"
+    @State private var text = ""
+    @Binding var compassTips: TipGroup
     
     var body: some View {
         VStack {
             ZStack {
                 HStack {
-                    if !vm.showOpenedView {
+                    if !vm.isFooterExpanded {
                         CustomMenuView(selection: $vm.textContentType, titleProvider: { $0.title })
+                            .popoverTip(compassTips.currentTip as? TextContentTypeTip)
                     } else {
                         if vm.hasStartedScanning {
                             ShareButtonView(displayScale: displayScale)
@@ -35,7 +39,7 @@ struct FooterView: View {
                 HStack {
                     Spacer()
                     
-                    if !vm.showOpenedView {
+                    if !vm.isFooterExpanded {
                         PulsatingDots()
                             .environmentObject(vm)
                     } else {
@@ -47,6 +51,7 @@ struct FooterView: View {
                                     .foregroundStyle(.white)
                                     .imageScale(.large)
                                     .font(.system(size: 32))
+                                    .popoverTip(compassTips.currentTip as? ScanTip)
                             }
                         }
                     }
@@ -57,7 +62,6 @@ struct FooterView: View {
                 HStack {
                     Spacer()
                     
-#warning("Fix animation")
                     Button(action: {
                         withAnimation() {
                             vm.showExtractedText.toggle()
@@ -67,7 +71,7 @@ struct FooterView: View {
                         rotationAngle = vm.showExtractedText ? 180 : 0
                         
                         withAnimation(.linear(duration: 0.3)) {
-                            vm.showOpenedView.toggle()
+                            vm.isFooterExpanded.toggle()
                         }
                     }, label: {
                         Image(systemName: "chevron.up")
@@ -79,6 +83,7 @@ struct FooterView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(.white)
                             )
+                            .popoverTip(compassTips.currentTip as? ExpandFooterTip)
                         
                     })
                     .frame(alignment: .trailing)
@@ -136,11 +141,13 @@ struct FooterView: View {
         }
         .background(.black.opacity(0.7))
         .frame(height: vm.showExtractedText ? geometry.size.height * 0.7:    geometry.size.height * 0.2)
-        
-        .alert("Alert Title!", isPresented: $showAlert) {
+        .alert("", isPresented: $showAlert) {
             TextField(text: $text) {}
-#warning("Fix the namings")
 
+            Button("Cancel", role: .cancel) {
+                
+            }
+            
             Button("Submit") {
                 switch vm.textContentType {
                 case .all:
@@ -160,11 +167,9 @@ struct FooterView: View {
                 }
                 save()
             }
-            Button("Skip") {
-                print("Skip")
-            }
+           
         } message: {
-            Text("Enter channel name")
+            Text("Give it a name for better organization.")
         }
         
     }

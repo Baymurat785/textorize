@@ -8,56 +8,102 @@
 import SwiftUI
 import VisionKit
 import PDFKit
+import AVKit
+import TipKit
 
 struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var isCameraDenied = false
+    
+#warning("Change the naming!!!!")
+    @State var compassTips = TipGroup(.ordered) {
+        TextContentTypeTip()
+        ExpandFooterTip()
+        PDFTip()
+        ScanTip()
+    }
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 ZStack() {
-                    //ID was causing app crash
-                    //FIXME: Change name
                     DataScannerView(
                         recognizedItems: $vm.recognizedItems,
                         shouldScan: $vm.shouldScan,
                         recognizedDataType: vm.recognizedDataType
                     )
                     .edgesIgnoringSafeArea(.all)
-                    .id(vm.textContentType) // potentially, this is causing app to become freeze!!
+                    .id(vm.textContentType)
                     
                     VStack {
-                        HeaderView(geometry: geometry, dismiss: { dismiss() })
+                        HeaderView(geometry: geometry, dismiss: { dismiss() }, compassTip: $compassTips)
                         
                         Spacer()
                         
-                        FooterView(geometry: geometry)
+                        FooterView(geometry: geometry, compassTips: $compassTips)
+                    }
+                    
+                    if isCameraDenied {
+                        Button("Go to Settings") {
+                            openAppSettings()
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
             }
             
-            //FIXME: Fix this!
             .overlay(content: {
                 if vm.showToast {
                     ToastView(text: vm.toastText)
                 }
             })
-            .task {
-                await vm.requestAccess()
-            }
+            .onAppear(perform: {
+                checkCameraPermission()
+            })
             .onChange(of: vm.recognizedItems) {
                 if !vm.recognizedItems.isEmpty {
-                    DispatchQueue.main.async {
-                        vm.extractedItems = vm.recognizedItems
-                    }
+                    vm.extractedItems = vm.recognizedItems
                 }
             }
         }
     }
-}
-
-#Preview {
-    CameraView()
+    
+    //Corrected the logic of requesting access with the help of ChatGPT
+    func checkCameraPermission() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .authorized:
+            print("Camera access granted")
+        case .denied, .restricted:
+            isCameraDenied = true
+        case .notDetermined:
+            requestCameraPermission()
+        @unknown default:
+            break
+        }
+    }
+    
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            DispatchQueue.main.async {
+                if !granted {
+                    isCameraDenied = true
+                }
+            }
+        }
+    }
+    
+    func openAppSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+        }
+    }
+    
 }

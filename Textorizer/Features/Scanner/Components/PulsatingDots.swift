@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+
 //Created with the help of Chat GPT
 struct PulsatingDots: View {
     @State private var animate = false
     @EnvironmentObject var vm: MainViewModel
 
     var body: some View {
-        HStack() {
+        HStack {
             if vm.extractedItems.count == 0 {
                 ForEach(0..<3) { index in
                     Circle()

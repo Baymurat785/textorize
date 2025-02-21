@@ -12,10 +12,7 @@ import AVKit
 
 @MainActor
 final class MainViewModel: ObservableObject {
-    //MARK: - Camera Access
-    @Published var accessStatus: CameraAccessStatus = .notDetermined
-    
-    //MARK: - Scanning & Text recognition
+    //MARK:  Scanning & Text recognition
     @Published var recognizedItems: [RecognizedItem] = []
     @Published var extractedItems: [RecognizedItem] = []
     @Published var shouldScan = true
@@ -30,12 +27,9 @@ final class MainViewModel: ObservableObject {
     @Published var toastText = ""
     @Published var showToast = false
     
-    //MARK: - Capture photo
-    //    @Published var shouldCapturePhoto = false
-    //    @Published var capturedPhoto: IdentifiableImage? = nil
     
     @Published var showExtractedText = false
-    @Published var showOpenedView = false
+    @Published var isFooterExpanded = false
     @Published var selectedFileType: FileType = .pdf
     
     //MARK: Improved with ChatGPT
@@ -80,27 +74,5 @@ final class MainViewModel: ObservableObject {
     
     private var isScannerAvailable: Bool {
         DataScannerViewController.isAvailable && DataScannerViewController.isSupported
-    }
-    
-    func requestAccess() async {
-        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            accessStatus = .cameraNotAvailable
-            return
-        }
-        
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .notDetermined:
-            let granted = await AVCaptureDevice.requestAccess(for: .video)
-            if granted {
-                accessStatus = isScannerAvailable ? .scannerAvailable : .scannerNotAvailable
-            } else {
-                accessStatus = .accessNotGranted
-            }
-        case .restricted, .denied:
-            accessStatus = .accessNotGranted
-        case .authorized:
-            accessStatus = isScannerAvailable ? .scannerAvailable : .scannerNotAvailable
-        default: break
-        }
     }
 }

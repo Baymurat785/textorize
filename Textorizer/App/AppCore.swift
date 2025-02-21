@@ -15,9 +15,11 @@ final class AppCore: ObservableObject {
     @AppStorage(Keys.hasOnboardingSeen)
     var hasOnboardingSeen: Bool = false
     
-    
+    @AppStorage(Keys.hasTipsSeen)
+    var hasTipsSeen: Bool = false
     
     enum Keys {
         static let hasOnboardingSeen = "hasOnboardingSeen"
+        static let hasTipsSeen = "hasTipsSeen"
     }
 }
