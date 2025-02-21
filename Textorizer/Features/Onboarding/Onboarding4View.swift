@@ -18,7 +18,7 @@ struct Onboarding4View: View {
             Spacer()
             
             if showText {
-                OnboardingTextView(text: "Your gallery is a place for cherished memories, not for information.")
+                OnboardingTextView(text: "Your gallery is a place\nfor cherished memories,\nnot for information.")
                     .transition(.move(edge: .top))
             }
             Spacer()
@@ -35,17 +35,22 @@ struct Onboarding4View: View {
             }
         }
         .ignoresSafeArea()
-        .transition(.move(edge: .trailing))
-        .onAppear {
+        .task {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+
             withAnimation {
                 showText = true
             }
-        }
-        .task {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
             withAnimation {
                 showButton = true
             }
         }
+        .background(
+            Rectangle()
+                .fill(.white)
+        )
+        .transition(.move(edge: .trailing))
     }
 }

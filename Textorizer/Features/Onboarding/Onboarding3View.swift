@@ -19,7 +19,7 @@ struct Onboarding3View: View {
             Spacer()
             
             if showText {
-                OnboardingTextView(text: "Easily copy or save any scanned or selected text")
+                OnboardingTextView(text: "Easily copy or save any\nscanned or selected text")
             }
             
             Spacer()
@@ -45,7 +45,6 @@ struct Onboarding3View: View {
                 }
             }
         }
-        .transition(.move(edge: .trailing))
         .ignoresSafeArea()
         .onAppear {
             withAnimation {
@@ -55,11 +54,14 @@ struct Onboarding3View: View {
         }
         .task {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
-            
             withAnimation {
                 showButton = true
             }
         }
-
+        .background(
+            Rectangle()
+                .fill(.white)
+        )
+        .transition(.move(edge: .leading))
     }
 }

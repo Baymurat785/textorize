@@ -17,13 +17,12 @@ extension OnboardingView {
         
         var body: some View {
             VStack {
-    #warning("Correct the text position")
+                Spacer()
                 
                 if showText {
-                    OnboardingTextView(text: "You can select the text content type!")
+                    OnboardingTextView(text: "You can select the text\ncontent type!")
                 }
                     
-                Spacer(minLength: 50)
                 
                 if showImage {
                     Image(.onboardingImage2)

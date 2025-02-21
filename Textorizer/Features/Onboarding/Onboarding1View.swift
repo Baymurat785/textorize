@@ -20,7 +20,7 @@ struct Onboarding1View: View {
             Spacer()
             
             if showText {
-                OnboardingTextView(text: "Fed up with cluttered, text-heavy galleries? Discover a cleaner, more visual experience with our app.")
+                OnboardingTextView(text: "Fed up with cluttered,\ntext-heavy galleries?\nDiscover a cleaner, more\nvisual experience with \nour app.")
             }
             
             Spacer()

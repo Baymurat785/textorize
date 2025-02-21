@@ -20,7 +20,7 @@ struct OnboardingButtonView: View {
             Text(text)
                 .foregroundStyle(colorText)
                 .padding()
-                .frame(maxWidth: .infinity)
+                .frame(width: 300)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
                         .fill(color)
