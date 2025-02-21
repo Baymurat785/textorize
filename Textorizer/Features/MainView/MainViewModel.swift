@@ -12,15 +12,11 @@ import AVKit
 
 @MainActor
 final class MainViewModel: ObservableObject {
-    //MARK:  Scanning & Text recognition
     @Published var recognizedItems: [RecognizedItem] = []
     @Published var extractedItems: [RecognizedItem] = []
     @Published var shouldScan = true
     @Published var selectedText = ""
-
-    //MARK: - UI State
-    @Published var activeView: ViewType = .scanner
-    @Published var showCamera: Bool = false
+    @Published var showScanner = false
     @Published var textContentType: TextContentTypeOption = .all
     
     //for toast view
@@ -32,7 +28,7 @@ final class MainViewModel: ObservableObject {
     @Published var isFooterExpanded = false
     @Published var selectedFileType: FileType = .pdf
     
-    //MARK: Improved with ChatGPT
+    //Improved with ChatGPT
     let textContentTypes: [(title: String, textContentType: DataScannerViewController.TextContentType?)] = TextContentTypeOption.allCases.map {
         ($0.rawValue, $0.scannerType)
     }
@@ -40,7 +36,6 @@ final class MainViewModel: ObservableObject {
     var recognizedDataType: DataScannerViewController.RecognizedDataType {
         .text(textContentType: textContentType.scannerType)
     }
-    //MARK: -
     
     var hasStartedScanning: Bool {
         !extractedItems.isEmpty
@@ -74,5 +69,19 @@ final class MainViewModel: ObservableObject {
     
     private var isScannerAvailable: Bool {
         DataScannerViewController.isAvailable && DataScannerViewController.isSupported
+    }
+    
+    func reset() {
+        recognizedItems = []
+        extractedItems = []
+        shouldScan = true
+        selectedText = ""
+        showScanner = false
+        textContentType = .all
+        toastText = ""
+        showToast = false
+        showExtractedText = false
+        isFooterExpanded = false
+        selectedFileType = .pdf
     }
 }

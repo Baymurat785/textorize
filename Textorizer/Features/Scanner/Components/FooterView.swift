@@ -8,17 +8,16 @@
 import SwiftUI
 import TipKit
 
-#warning("Change the text in tips")
 struct FooterView: View {
     let geometry: GeometryProxy
     @Environment(\.modelContext) var modelContext
-    @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
-    @State var rotationAngle: Double = 0
     @Environment(\.displayScale) var displayScale
+    @EnvironmentObject var vm: MainViewModel
+    @State var rotationAngle: Double = 0
     @State private var showAlert = false
     @State private var text = ""
-    @Binding var compassTips: TipGroup
+    @Binding var tips: TipGroup
     
     var body: some View {
         VStack {
@@ -26,7 +25,7 @@ struct FooterView: View {
                 HStack {
                     if !vm.isFooterExpanded {
                         CustomMenuView(selection: $vm.textContentType, titleProvider: { $0.title })
-                            .popoverTip(compassTips.currentTip as? TextContentTypeTip)
+                            .popoverTip(tips.currentTip as? TextContentTypeTip)
                     } else {
                         if vm.hasStartedScanning {
                             ShareButtonView(displayScale: displayScale)
@@ -51,7 +50,7 @@ struct FooterView: View {
                                     .foregroundStyle(.white)
                                     .imageScale(.large)
                                     .font(.system(size: 32))
-                                    .popoverTip(compassTips.currentTip as? ScanTip)
+                                    .popoverTip(tips.currentTip as? ScanTip)
                             }
                         }
                     }
@@ -83,7 +82,7 @@ struct FooterView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(.white)
                             )
-                            .popoverTip(compassTips.currentTip as? ExpandFooterTip)
+                            .popoverTip(tips.currentTip as? ExpandFooterTip)
                         
                     })
                     .frame(alignment: .trailing)

@@ -20,7 +20,7 @@ struct TextorizerApp: App {
             if appCore.hasOnboardingSeen {
                 MainView()
                     .environmentObject(vm)
-                    .fullScreenCover(isPresented: $vm.showCamera) {
+                    .fullScreenCover(isPresented: $vm.showScanner) {
                         ScannerView()
                             .environmentObject(vm)
                     }

@@ -15,9 +15,7 @@ struct ScannerView: View {
     @EnvironmentObject var vm: MainViewModel
     @Environment(\.dismiss) var dismiss
     @State private var isCameraDenied = false
-    
-#warning("Change the naming!!!!")
-    @State var compassTips = TipGroup(.ordered) {
+    @State var tips = TipGroup(.ordered) {
         TextContentTypeTip()
         ExpandFooterTip()
         PDFTip()
@@ -37,11 +35,11 @@ struct ScannerView: View {
                     .id(vm.textContentType)
                     
                     VStack {
-                        HeaderView(geometry: geometry, dismiss: { dismiss() }, compassTip: $compassTips)
+                        HeaderView(geometry: geometry, dismiss: { dismiss() }, tips: $tips)
                         
                         Spacer()
                         
-                        FooterView(geometry: geometry, compassTips: $compassTips)
+                        FooterView(geometry: geometry, tips: $tips)
                     }
                     
                     if isCameraDenied {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-#warning("Add search function")
+
 struct MainView: View {
     @EnvironmentObject var vm: MainViewModel
     @State var selectedType: TextContentTypeOption?
@@ -55,8 +55,7 @@ struct MainView: View {
                     }
                 }
 
-                //This spacer is static!!!
-                Spacer(minLength: 100)
+                Spacer()
                 
                 VStack(spacing: 20) {
                     //this is becoming complex
@@ -96,7 +95,7 @@ struct MainView: View {
                     Spacer()
                     
                     Button {
-                        vm.showCamera = true
+                        vm.showScanner = true
                     } label: {
                         Image(systemName: "text.viewfinder")
                             .resizable()
@@ -116,12 +115,8 @@ struct MainView: View {
             .navigationDestination(isPresented: $showItemsView) {
                 switch selectedType {
                 case .all:
-                    if #available(iOS 18.0, *) {
-                        AllContentView()
-                            .navigationTransition(.zoom(sourceID: TextContentTypeOption.all.id, in: animation))
-                    } else {
-                        AllContentView()
-                    }
+                    AllContentView()
+                        .navigationTransition(.zoom(sourceID: TextContentTypeOption.all.id, in: animation))
                 case .url:
                     URLContentView()
                 case .phone:

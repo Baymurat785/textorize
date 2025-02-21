@@ -13,7 +13,7 @@ struct HeaderView: View {
     @EnvironmentObject var vm: MainViewModel
     let geometry: GeometryProxy
     var dismiss: () -> Void
-    @Binding var compassTip: TipGroup
+    @Binding var tips: TipGroup
     
     var body: some View {
         ZStack {
@@ -21,7 +21,7 @@ struct HeaderView: View {
                 Spacer()
                 
                 CustomMenuView(selection: $vm.selectedFileType, titleProvider: { $0.title })
-                    .popoverTip(compassTip.currentTip as? PDFTip)
+                    .popoverTip(tips.currentTip as? PDFTip)
                 
                 Spacer()
             }
@@ -30,6 +30,7 @@ struct HeaderView: View {
                 Spacer()
                 
                 Button {
+                    vm.reset()
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
