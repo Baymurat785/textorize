@@ -23,36 +23,21 @@ struct MainView: View {
                     showItemsView = true
                     selectedType = .all
                 } label: {
-                    if #available(iOS 18.0, *) {
-                        HStack(alignment: .top) {
-                            Text(TextContentTypeOption.all.title)
-                                .font(.system(size: 24))
-                                .foregroundStyle(.black)
-                                .padding()
-                            
-                            Spacer()
-                        }
-                        .containerRelativeFrame(.vertical) { height, _ in
-                            height * 0.2
-                        }
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .matchedTransitionSource(id: TextContentTypeOption.all.id, in: animation)
-                    } else {
-                        HStack(alignment: .top) {
-                            Text(TextContentTypeOption.all.title)
-                                .font(.system(size: 24))
-                                .foregroundStyle(.black)
-                                .padding()
-                            
-                            Spacer()
-                        }
-                        .containerRelativeFrame(.vertical) { height, _ in
-                            height * 0.2
-                        }
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    HStack(alignment: .top) {
+                        Text(TextContentTypeOption.all.title)
+                            .font(.system(size: 24))
+                            .foregroundStyle(.black)
+                            .padding()
+                        
+                        Spacer()
                     }
+                    .containerRelativeFrame(.vertical) { height, _ in
+                        height * 0.2
+                    }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .matchedTransitionSource(id: TextContentTypeOption.all.id, in: animation)
+                    
                 }
 
                 Spacer()
