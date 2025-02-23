@@ -47,14 +47,13 @@ struct Onboarding3View: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            withAnimation {
+            withAnimation(.easeInOut(duration: 0.8)) {
                 showImage = true
-                showText = true
             }
         }
         .task {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-            withAnimation {
+            try? await Task.sleep(nanoseconds: 800_000_000)
+            withAnimation(.easeInOut(duration: 0.5)) {
                 showButton = true
             }
         }
@@ -62,6 +61,5 @@ struct Onboarding3View: View {
             Rectangle()
                 .fill(.white)
         )
-        .transition(.move(edge: .leading))
     }
 }

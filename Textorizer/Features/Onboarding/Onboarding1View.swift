@@ -48,15 +48,14 @@ struct Onboarding1View: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            withAnimation {
-                showImage = true
+            withAnimation(.easeInOut(duration: 0.8)) {
                 showText = true
+                showImage = true
             }
         }
         .task {
-            try? await Task.sleep(nanoseconds: 4_000_000_000)
-            
-            withAnimation {
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            withAnimation(.easeInOut(duration: 0.6)) {
                 showButton = true
             }
         }

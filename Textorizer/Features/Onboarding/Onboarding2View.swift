@@ -22,7 +22,7 @@ extension OnboardingView {
                 if showText {
                     OnboardingTextView(text: "You can select the text\ncontent type!")
                 }
-                    
+                
                 
                 if showImage {
                     Image("onboardingImage2")
@@ -46,29 +46,19 @@ extension OnboardingView {
                     .transition(.move(edge: .bottom))
                 }
             }
-            .onAppear(perform: {
-                withAnimation {
-                    showText = true
-                }
-            })
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.6)) { showText = true }
+            }
             .task {
-                    try? await Task.sleep(nanoseconds: 500_000_000)
-                withAnimation {
-                    showImage = true
-                }
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                withAnimation {
-                    showButton = true
-                }
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                withAnimation(.easeInOut(duration: 0.6)) { showImage = true }
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                withAnimation(.easeInOut(duration: 0.6)) { showButton = true }
             }
             .frame(maxWidth: .infinity)
-            .background(
-                Rectangle()
-                    .fill(.white)
-            )
-            .transition(.move(edge: .leading))
+            .background(Rectangle().fill(.white))
             .ignoresSafeArea(edges: .bottom)
         }
     }
-
+    
 }
