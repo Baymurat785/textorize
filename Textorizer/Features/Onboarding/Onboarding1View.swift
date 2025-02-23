@@ -27,10 +27,10 @@ struct Onboarding1View: View {
             
             ZStack(alignment: .bottom) {
                 if showImage {
-                    Group {
-                        Image(.imageOnboarding)
+                    Group {                        
+                        Image("image-onboarding")
                         
-                        Image(.phoneOnboarding)
+                        Image("phone-onboarding")
                     }
                     .transition(.move(edge: .bottom))
                 }

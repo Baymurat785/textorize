@@ -25,7 +25,7 @@ extension OnboardingView {
                     
                 
                 if showImage {
-                    Image(.onboardingImage2)
+                    Image("onboardingImage2")
                         .resizable()
                         .frame(width: 345, height: 415)
                         .overlay(content: {
